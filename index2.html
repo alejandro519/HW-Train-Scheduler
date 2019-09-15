@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+​
+​
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+​
+​
+
+<body>
+  <div class=container>
+    <!--Jumbotron-->
+    <div class="jumbotron bg-dark ">
+      <h1 class="display-4 text-white text-center">Employee Data Management</h1>
+    </div>
+    ​
+    <div class="card">
+      <div class="card-header">
+        Current Employees
+      </div>
+      <div class="card-body" id="content-here">
+        ​
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Employee Name</th>
+              <th scope="col">Role</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">Months Worked</th>
+              <th scope="col">Monthly Rate $</th>
+              <th scope="col">Total Billed $</th>
+            </tr>
+          </thead>
+          <tbody id="x">
+            <!-- <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr> -->
+          </tbody>
+        </table>
+        ​
+      </div>
+    </div><br>
+    ​
+    <div class="card">
+      <div class="card-header">
+        Add Employee
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">
+          <form>
+            <div class="form-group">
+              <label for="employee-name">Employee Name</label>
+              <input type="text" class="form-control" id="employee-name" placeholder="Jane Doe">
+            </div>
+            <div class="form-group">
+              <label for="role">Role</label>
+              <input type="text" class="form-control" id="role" placeholder="CEO">
+            </div>
+            <div class="form-group">
+              <label for="start-date">Start Date (MM/DD/YYYY)</label>
+              <input type="text" class="form-control" id="start-date" placeholder="01/01/1989">
+            </div>
+            <div class="form-group">
+              <label for="monthly-rate">Monthly Rate</label>
+              <input type="text" class="form-control" id="monthly-rate" placeholder="Input">
+            </div>
+          </form>
+        </h5>
+        <button class="btn btn-primary" id="submit" type="submit">Submit</button>
+      </div>
+    </div>
+    <br>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
+    <!-- Specific Firebase products we want (Database) -->
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-database.js"></script>
+    <!-- Moment.js link -->
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <script>
+        var firebaseConfig = {
+    apiKey: "AIzaSyB6h45dkNSs8PAiSdrdGku0lEK_JL_nCwo",
+    authDomain: "ap-cbc-activities.firebaseapp.com",
+    databaseURL: "https://ap-cbc-activities.firebaseio.com",
+    projectId: "ap-cbc-activities",
+    storageBucket: "",
+    messagingSenderId: "702662169387",
+    appId: "1:702662169387:web:7bd3a4d534c9eee66dab6e"
+  };
+
+  console.log(firebaseConfig);
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+      // Assign the reference to the database to a variable named 'database'
+      // var database = ...
+      var database = firebase.database();
+      var dateFormat = "MM/DD/YYYY";
+      var monthlyRate;
+
+      $("#submit").on("click", function (event) {
+        //EMPLOYEE-NAME ROLE START-DATE MONTLY-RATE
+        event.preventDefault();
+
+        var employeeName = $("#employee-name").val();
+        var role = $("#role").val();
+        var startDate = $("#start-date").val();
+
+        monthlyRate = $("#monthly-rate").val();
+        //ADD MOMENT JS
+        database.ref().push({
+          employeeName: employeeName,
+          role: role,
+          startDate: startDate,
+          monthlyRate: monthlyRate,
+        });
+      });
+
+      database.ref().on(
+        "child_added",
+        function (childSnapshot) {
+          var convertedDate = moment(childSnapshot.val().startDate, dateFormat);
+          var monthsWorked = moment().diff(convertedDate, "months");
+
+          monthlyRate = childSnapshot.val().monthlyRate;
+
+          var totalBilled = monthlyRate * monthsWorked;
+
+          var newRow = $("<tr>");
+
+          newRow.append("<td>" + childSnapshot.val().employeeName + "</td>");
+          newRow.append("<td>" + childSnapshot.val().role + "</td>");
+          newRow.append("<td>" + childSnapshot.val().startDate + "</td>");
+          newRow.append("<td>" + monthsWorked + "</td>");
+          newRow.append("<td>" + childSnapshot.val().monthlyRate + "</td>");
+          newRow.append("<td>" + totalBilled + "</td>");
+          $("#x").append(newRow);
+        });
+    </script>
+</body>
+
+</html>
