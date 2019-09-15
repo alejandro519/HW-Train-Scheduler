@@ -12,16 +12,17 @@
     <title>Train Schedule</title>
   </head>
   <body>
-    <div class = "container">
+    <div class="container bg-transparent">
 
-    <div class="jumbotron bg-success text-white">
-            <h1 class="display-4 text-center">Welcome To The Crazy Train!</h1><br>
+    <div class="jumbotron bg-dark text-white">
+            <h1 class="display-4 text-center">Welcome to the Crazy Train Terminal!</h1><br>
             <p class="lead text-center">Join me as I go off the rails on a crazy train!</p>
+            <p class="lead text-center" id="current-time">Current Time: </p>
     </div>
 
 
     <div class="card">
-            <div class="card-header bg-success text-white font-weight-bold">
+            <div class="card-header bg-dark text-white font-weight-bold">
               Current Crazy Train Schedule
             </div>
             <table class="table">
@@ -29,7 +30,7 @@
                       <tr>
                         <th scope="col">Train Name</th>
                         <th scope="col">Destination</th>
-                        <th scope="col">Frequecy (min)</th>
+                        <th scope="col">Frequency (min)</th>
                         <th scope="col">Next Arrival</th>
                         <th scope="col">Mins Away</th>
                       </tr>
@@ -40,28 +41,28 @@
                   </table>
 
     </div>
-    <div class="card mt-4">
-            <div class="card-header bg-success text-white font-weight-bold">
+    <div class="card mt-4 mb-4">
+            <div class="card-header bg-dark text-white font-weight-bold">
               Add a Crazy Train
             </div>
             <form>
-                    <div class="form-group font-weight-bold pl-3 pr-3">
+                    <div class="form-group font-weight-bold pl-3 pr-3 pt-3">
                       <label for="formGroupExampleInput">Train Name</label>
                       <input type="text" class="form-control" id="train-name" placeholder="Text Here">
                     </div>
-                    <div class="form-group font-weight-bold p-3">
+                    <div class="form-group font-weight-bold pl-3 pr-3 pt-1">
                       <label for="formGroupExampleInput2">Destination</label>
                       <input type="text" class="form-control" id="destination" placeholder="Text Here">
                     </div>
-                    <div class="form-group font-weight-bold p-3">
-                            <label for="formGroupExampleInput2">First Train Time </label>
-                            <input type="text" class="form-control" id="first-train-time" placeholder="Text Here">
+                    <div class="form-group font-weight-bold pl-3 pr-3 pt-1">
+                            <label for="formGroupExampleInput2">First Train Time (24 hr format)</label>
+                            <input type="text" class="form-control" id="first-train-time" placeholder="Ex: 12:34">
                     </div>
-                    <div class="form-group font-weight-bold p-3">
+                    <div class="form-group font-weight-bold pl-3 pr-3 pt-1">
                         <label for="formGroupExampleInput2">Frequency (min)</label>
                         <input type="text" class="form-control" id="frequency" placeholder="Text Here">
                     </div>
-                    <button class="btn btn-primary ml-3" id="submit" type="submit">Submit</button>
+                    <button class="btn btn-secondary ml-3" id="submit" type="submit">Submit</button>
                   </form>
 
 
@@ -71,9 +72,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
-  <!-- Specific Firebase products we want (Database) -->
     <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-database.js"></script>
-  
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <script>
 
       var firebaseConfig = {
@@ -87,11 +87,9 @@
 };
 
 console.log(firebaseConfig);
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
 var database = firebase.database();
-
 
 $("#submit").on("click", function (event) {
   event.preventDefault();
@@ -114,14 +112,22 @@ database.ref().on(
   function (childSnapshot) {
 
 
+
 var newRow = $("<tr>");
 
-//insert details here!!!
-newRow.append("<td>" + childSnapshot.val().trainName + "<td>");
-newRow.append("<td>" + childSnapshot.val().destination + "<td>");
-newRow.append("<td>" + childSnapshot.val().frequency + "<td>");
+newRow.append("<td>" + childSnapshot.val().trainName + "</td>");
+newRow.append("<td>" + childSnapshot.val().destination + "</td>");
+newRow.append("<td>" + "Every " + childSnapshot.val().frequency + " mins" + "</td>");
 $("#details").append(newRow);
 })
+
+var currentTime = moment().format("H:mm:ss");
+$("#current-time").append(currentTime);
+
+// var currentTime = function() {
+//     $("#current-time").append(moment().format("h:mm:ss a"));
+// }
+// setInterval(currentTime, 1000);
 
   
   </script>
