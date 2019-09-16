@@ -1,4 +1,6 @@
 body {
-    background-image: url("assets/train_station.jpg");
+    background-image: url("../assets/train_station.jpg");
+    background-size: cover;
+    background-attachment: fixed;
     background-color: lightgrey;
 }
