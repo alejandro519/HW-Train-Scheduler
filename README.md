@@ -17,6 +17,8 @@ Use the form on the bottom half of the page to enter in your:
 
 Upon clicking the "Submit" button, your the details entered in the form along with the Next Arrival time and Mins Away will display in the section labeled "Current Crazy Train Schedule"
 
+I would like to add a flip board to a future version of the app.
+http://www.jaykayess.com/flapper/
 
 
 
