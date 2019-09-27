@@ -43,22 +43,10 @@
           $("#details").append(newRow);
         })
 
-        // var currentTime = moment().format("H:mm:ss");
-        // $("#current-time").append(currentTime);
-
-
-        // var myVar = setInterval(myTimer, 1000);
-
-        //     function myTimer() {
-        //       var d = new Date();
-        //       var t = d.toLocaleTimeString();
-        //       $("#current-time").append(t)
-        //     }
-
         var currentTime = setInterval(myTimer, 1000);
 
             function myTimer() {
               var d = new Date();
               var t = d.toLocaleTimeString('en-GB');
-              document.getElementById("current-time").innerHTML = "Current Time: " + t;
+              $("#current-time").html("Current Time: " + t);
             }
